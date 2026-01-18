@@ -1,22 +1,24 @@
 {
   "name": "sharehub-platform",
   "version": "1.0.0",
-  "description": "Professional file-sharing platform with real-time messaging",
+  "description": "Professional file sharing platform with real upload/download functionality",
   "main": "api/server.js",
   "scripts": {
-    "start": "node api/server.js",
-    "build": "echo 'Build complete'",
-    "dev": "node api/server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "formidable": "^3.5.1"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "dependencies": {},
   "keywords": [
     "file-sharing",
-    "nodejs",
-    "web-app",
-    "vercel"
+    "upload",
+    "download",
+    "vercel",
+    "serverless"
   ],
   "author": "Your Name",
   "license": "MIT"

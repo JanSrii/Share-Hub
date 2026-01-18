@@ -1,9 +1,17 @@
-// ShareHub - Vercel Serverless Function
+// ShareHub - Vercel Serverless Function with Real File Handling
 const url = require('url');
 const path = require('path');
+const formidable = require('formidable');
+const fs = require('fs');
 
-// Simple file storage (in production, use a database)
+// File storage using temporary directory (Vercel /tmp)
+const UPLOAD_DIR = '/tmp/uploads';
 let files = new Map();
+
+// Ensure upload directory exists
+if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
 
 // Utility functions
 const formatFileSize = (bytes) => {
@@ -136,30 +144,60 @@ module.exports = async (req, res) => {
         }
         
         if (cleanPath === '/upload' && req.method === 'POST') {
-            // Simulate file upload for demo
-            const uploadedFiles = [];
-            
-            // Create demo uploaded file
-            const fileId = generateId();
-            const fileInfo = {
-                id: fileId,
-                originalName: 'demo-upload.txt',
-                size: 1024,
-                uploadDate: new Date(),
-                downloads: 0,
-                icon: 'fas fa-file-alt',
-                formattedSize: '1 KB'
-            };
-            
-            files.set(fileId, fileInfo);
-            uploadedFiles.push(fileInfo);
-            
-            res.status(200).json({
-                success: true,
-                files: uploadedFiles,
-                message: 'Demo upload successful! (Vercel Live Demo)'
-            });
-            return;
+            try {
+                // Parse multipart form data
+                const form = formidable({
+                    uploadDir: UPLOAD_DIR,
+                    keepExtensions: true,
+                    maxFileSize: 50 * 1024 * 1024, // 50MB limit
+                    multiples: true
+                });
+
+                const [fields, uploadedFiles] = await form.parse(req);
+                const uploadedFilesList = [];
+
+                // Handle single or multiple files
+                const fileArray = Array.isArray(uploadedFiles.files) ? uploadedFiles.files : [uploadedFiles.files];
+
+                for (const file of fileArray) {
+                    if (!file) continue;
+
+                    const fileId = generateId();
+                    const originalName = file.originalFilename || 'unnamed-file';
+                    const fileSize = file.size;
+                    const filePath = file.filepath;
+
+                    // Store file info
+                    const fileInfo = {
+                        id: fileId,
+                        originalName: originalName,
+                        size: fileSize,
+                        uploadDate: new Date(),
+                        downloads: 0,
+                        icon: getFileIcon(originalName),
+                        formattedSize: formatFileSize(fileSize),
+                        filePath: filePath
+                    };
+
+                    files.set(fileId, fileInfo);
+                    uploadedFilesList.push(fileInfo);
+                }
+
+                res.status(200).json({
+                    success: true,
+                    files: uploadedFilesList,
+                    message: `Successfully uploaded ${uploadedFilesList.length} file(s)`
+                });
+                return;
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                res.status(500).json({
+                    success: false,
+                    error: 'Upload failed: ' + error.message
+                });
+                return;
+            }
         }
         
         if (cleanPath.startsWith('/download/')) {
@@ -170,15 +208,34 @@ module.exports = async (req, res) => {
                 res.status(404).json({ error: 'File not found' });
                 return;
             }
-            
-            fileInfo.downloads++;
-            files.set(fileId, fileInfo);
-            
-            // Return demo content
-            res.setHeader('Content-Type', 'text/plain');
-            res.setHeader('Content-Disposition', `attachment; filename="${fileInfo.originalName}"`);
-            res.status(200).send(`Demo file content for: ${fileInfo.originalName}\nThis is a Vercel deployment demo.\nFile uploaded on: ${fileInfo.uploadDate}\nDownloads: ${fileInfo.downloads}`);
-            return;
+
+            try {
+                // Check if file exists on disk
+                if (!fs.existsSync(fileInfo.filePath)) {
+                    res.status(404).json({ error: 'File not found on disk' });
+                    return;
+                }
+
+                // Read and serve the actual file
+                const fileBuffer = fs.readFileSync(fileInfo.filePath);
+                
+                // Update download count
+                fileInfo.downloads++;
+                files.set(fileId, fileInfo);
+
+                // Set appropriate headers
+                res.setHeader('Content-Type', 'application/octet-stream');
+                res.setHeader('Content-Disposition', `attachment; filename="${fileInfo.originalName}"`);
+                res.setHeader('Content-Length', fileBuffer.length);
+                
+                res.status(200).send(fileBuffer);
+                return;
+
+            } catch (error) {
+                console.error('Download error:', error);
+                res.status(500).json({ error: 'Download failed: ' + error.message });
+                return;
+            }
         }
         
         // Default API response
