@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: sharehub-platform
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server-minimal.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000

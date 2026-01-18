@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareHub - Global File Sharing Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="description" content="ShareHub - Professional file sharing platform with real-time messaging capabilities">
+    <meta name="keywords" content="file sharing, upload, download, real-time, messaging, web app">
+    <meta property="og:title" content="ShareHub - Global File Sharing Platform">
+    <meta property="og:description" content="Professional file sharing platform with drag & drop uploads and real-time messaging">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/6366f1/ffffff?text=ShareHub">
+</head>
+<body>
+    <!-- Demo Banner -->
+    <div style="background: linear-gradient(90deg, #6366f1, #8b5cf6); color: white; text-align: center; padding: 10px; font-weight: 500;">
+        🚀 ShareHub Demo - GitHub Pages Version | 
+        <a href="https://github.com/yourusername/sharehub-platform" style="color: #fbbf24; text-decoration: none;">View Full Source Code</a> | 
+        <span style="color: #c7d2fe;">For full functionality, deploy the Node.js version</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-share-alt"></i>
+                <span>ShareHub</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#platform" class="nav-link">Demo</a>
+                <a href="#files" class="nav-link">Files</a>
+                <button class="join-btn" onclick="showJoinModal()">Demo Chat</button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Share Files Globally, Chat Instantly</h1>
+            <p>Professional file-sharing platform with real-time messaging. This is a demo version - deploy the full Node.js version for complete functionality!</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="showUploadModal()">
+                    <i class="fas fa-upload"></i> Try Demo Upload
+                </button>
+                <button class="btn-secondary" onclick="window.open('https://github.com/yourusername/sharehub-platform', '_blank')">
+                    <i class="fab fa-github"></i> View Source
+                </button>
+            </div>
+            <div class="stats-preview">
+                <div class="stat">
+                    <span id="totalFiles">0</span>
+                    <label>Files Shared</label>
+                </div>
+                <div class="stat">
+                    <span id="totalUsers">0</span>
+                    <label>Active Users</label>
+                </div>
+                <div class="stat">
+                    <span id="totalRooms">0</span>
+                    <label>Chat Rooms</label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- File Upload Section -->
+    <section id="upload" class="upload-section">
+        <div class="container">
+            <h2>Demo File Upload</h2>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop Files Here (Demo)</h3>
+                    <p>Try the interface - files are simulated for GitHub Pages</p>
+                    <input type="file" id="fileInput" multiple hidden>
+                    <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Choose Files
+                    </button>
+                </div>
+            </div>
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span id="progressText">Uploading...</span>
+            </div>
+            <div class="uploaded-files" id="uploadedFiles"></div>
+        </div>
+    </section>
+
+    <!-- Platform Demo -->
+    <section id="platform" class="platform-section">
+        <div class="container">
+            <h2>Platform Demo</h2>
+            <div class="join-prompt" id="joinPrompt">
+                <div class="join-content">
+                    <i class="fas fa-comments"></i>
+                    <h3>Interactive Demo</h3>
+                    <p>This GitHub Pages version demonstrates the UI/UX. Deploy the Node.js version for full real-time chat functionality!</p>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn-primary" onclick="showUploadModal()">Try File Upload Demo</button>
+                        <button class="btn-secondary" onclick="window.open('https://github.com/yourusername/sharehub-platform', '_blank')" style="margin-left: 1rem;">
+                            <i class="fab fa-github"></i> Get Full Version
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Files Browser -->
+    <section id="files" class="files-section">
+        <div class="container">
+            <h2>Browse Demo Files</h2>
+            <div class="files-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search files..." onkeyup="searchFiles()">
+                </div>
+                <button class="btn-secondary" onclick="refreshFiles()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="files-grid" id="filesGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading demo files...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" style="padding: 100px 0; background: #f8fafc;">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #1e293b;">Full Version Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                    <i class="fas fa-upload" style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;"></i>
+                    <h3>Real File Upload</h3>
+                    <p>Actual file upload/download up to 100MB per file with secure storage</p>
+                </div>
+                <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                    <i class="fas fa-comments" style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;"></i>
+                    <h3>Real-time Chat</h3>
+                    <p>Live messaging with Socket.IO, file sharing in chat, typing indicators</p>
+                </div>
+                <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                    <i class="fas fa-server" style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;"></i>
+                    <h3>Node.js Backend</h3>
+                    <p>Complete REST API, file management, user sessions, security features</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <button class="btn-primary" onclick="window.open('https://github.com/yourusername/sharehub-platform', '_blank')" style="padding: 15px 30px; font-size: 1.1rem;">
+                    <i class="fab fa-github"></i> Deploy Full Version
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Demo File Upload</h3>
+                <button class="close-btn" onclick="closeModal('uploadModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="modalUploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Try the drag & drop interface</h4>
+                    <p>Files are simulated for this GitHub Pages demo</p>
+                    <input type="file" id="modalFileInput" multiple hidden>
+                    <button class="btn-primary" onclick="document.getElementById('modalFileInput').click()">
+                        Select Files
+                    </button>
+                </div>
+                <div class="selected-files" id="selectedFiles"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('uploadModal')">Cancel</button>
+                <button class="btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>Upload Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="previewTitle">File Preview</h3>
+                <button class="close-btn" onclick="closeModal('previewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('previewModal')">Close</button>
+                <button class="btn-primary" id="downloadBtn">
+                    <i class="fas fa-download"></i> Demo Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Footer -->
+    <footer style="background: #1e293b; color: white; padding: 3rem 0; text-align: center;">
+        <div class="container">
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                    <i class="fas fa-share-alt" style="font-size: 2rem; color: #6366f1; margin-right: 10px;"></i>
+                    <span style="font-size: 1.5rem; font-weight: bold;">ShareHub</span>
+                </div>
+                <p style="color: #94a3b8;">Professional file-sharing platform with real-time messaging</p>
+            </div>
+            <div style="border-top: 1px solid #334155; padding-top: 2rem;">
+                <p>&copy; 2025 ShareHub. Built with Node.js, Express, and modern web technologies.</p>
+                <div style="margin-top: 1rem;">
+                    <a href="https://github.com/yourusername/sharehub-platform" style="color: #6366f1; text-decoration: none; margin: 0 1rem;">
+                        <i class="fab fa-github"></i> Source Code
+                    </a>
+                    <a href="#" style="color: #6366f1; text-decoration: none; margin: 0 1rem;">
+                        <i class="fas fa-rocket"></i> Deploy Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="app-github-pages.js"></script>
+</body>
+</html>

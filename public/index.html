@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareHub - Global File Sharing Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-share-alt"></i>
+                <span>ShareHub</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#platform" class="nav-link">Platform</a>
+                <a href="#files" class="nav-link">Files</a>
+                <button class="join-btn" onclick="showJoinModal()">Join Room</button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Share Files Globally, Chat Instantly</h1>
+            <p>Upload files, share with the world, and chat in real-time. No registration required!</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="showUploadModal()">
+                    <i class="fas fa-upload"></i> Upload Files
+                </button>
+                <button class="btn-secondary" onclick="showJoinModal()">
+                    <i class="fas fa-comments"></i> Join Chat
+                </button>
+            </div>
+            <div class="stats-preview">
+                <div class="stat">
+                    <span id="totalFiles">0</span>
+                    <label>Files Shared</label>
+                </div>
+                <div class="stat">
+                    <span id="totalUsers">0</span>
+                    <label>Active Users</label>
+                </div>
+                <div class="stat">
+                    <span id="totalRooms">0</span>
+                    <label>Chat Rooms</label>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- File Upload Section -->
+    <section id="upload" class="upload-section">
+        <div class="container">
+            <h2>Upload & Share Files</h2>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop Files Here</h3>
+                    <p>or click to browse files</p>
+                    <input type="file" id="fileInput" multiple hidden>
+                    <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Choose Files
+                    </button>
+                </div>
+            </div>
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span id="progressText">Uploading...</span>
+            </div>
+            <div class="uploaded-files" id="uploadedFiles"></div>
+        </div>
+    </section>
+
+    <!-- Chat Platform -->
+    <section id="platform" class="platform-section">
+        <div class="container">
+            <h2>Real-Time Chat Platform</h2>
+            <div class="chat-container" id="chatContainer" style="display: none;">
+                <div class="chat-sidebar">
+                    <div class="room-info">
+                        <h3 id="roomName">Room</h3>
+                        <div class="online-users">
+                            <h4>Online Users (<span id="userCount">0</span>)</h4>
+                            <div id="usersList"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <div class="chat-title">
+                            <h3 id="chatRoomName">Global Chat</h3>
+                            <span id="chatStatus">Connected</span>
+                        </div>
+                        <div class="chat-actions">
+                            <button onclick="showUploadModal()" title="Upload File">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button onclick="leaveRoom()" title="Leave Room">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="typing-indicator" id="typingIndicator"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="messageInput" placeholder="Type a message..." maxlength="1000">
+                        <button id="sendButton" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="join-prompt" id="joinPrompt">
+                <div class="join-content">
+                    <i class="fas fa-comments"></i>
+                    <h3>Join a Chat Room</h3>
+                    <p>Connect with users worldwide and share files instantly</p>
+                    <button class="btn-primary" onclick="showJoinModal()">Join Room</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Files Browser -->
+    <section id="files" class="files-section">
+        <div class="container">
+            <h2>Browse Shared Files</h2>
+            <div class="files-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search files..." onkeyup="searchFiles()">
+                </div>
+                <button class="btn-secondary" onclick="refreshFiles()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="files-grid" id="filesGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading files...</p>
+                </div>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <!-- Join Room Modal -->
+    <div class="modal" id="joinModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Join Chat Room</h3>
+                <button class="close-btn" onclick="closeModal('joinModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="usernameInput">Your Name</label>
+                    <input type="text" id="usernameInput" placeholder="Enter your name" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="roomIdInput">Room ID</label>
+                    <input type="text" id="roomIdInput" placeholder="Enter room ID or leave blank for global">
+                </div>
+                <div class="quick-rooms">
+                    <h4>Quick Join</h4>
+                    <div class="room-buttons">
+                        <button onclick="quickJoin('global')">Global Room</button>
+                        <button onclick="quickJoin('tech')">Tech Talk</button>
+                        <button onclick="quickJoin('random')">Random Chat</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('joinModal')">Cancel</button>
+                <button class="btn-primary" onclick="joinRoom()">Join Room</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload Files</h3>
+                <button class="close-btn" onclick="closeModal('uploadModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="modalUploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Drag files here or click to browse</h4>
+                    <p>Maximum 100MB per file, up to 10 files at once</p>
+                    <input type="file" id="modalFileInput" multiple hidden>
+                    <button class="btn-primary" onclick="document.getElementById('modalFileInput').click()">
+                        Select Files
+                    </button>
+                </div>
+                <div class="selected-files" id="selectedFiles"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('uploadModal')">Cancel</button>
+                <button class="btn-primary" id="uploadBtn" onclick="uploadFiles()" disabled>Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="previewTitle">File Preview</h3>
+                <button class="close-btn" onclick="closeModal('previewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="previewContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('previewModal')">Close</button>
+                <button class="btn-primary" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "sharehub-platform",
+  "version": "1.0.0",
+  "description": "Full-stack file sharing platform with real-time messaging",
+  "main": "server-simple.js",
+  "scripts": {
+    "start": "node server-simple.js",
+    "dev": "node server-simple.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.4",
+    "multer": "^1.4.5",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "uuid": "^9.0.1",
+    "mime-types": "^2.1.35"
+  },
+  "keywords": [
+    "file-sharing",
+    "real-time",
+    "messaging",
+    "upload",
+    "download"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
