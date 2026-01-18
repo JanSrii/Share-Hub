@@ -13,8 +13,8 @@ class ShareHubApp {
         this.loadFiles();
         this.setupDragAndDrop();
         
-        // Show real functionality notification
-        this.showNotification('Platform Ready!', 'ShareHub is now fully functional with real file upload/download capabilities!', 'success');
+        // Show real functionality notification with limitations
+        this.showNotification('Platform Ready!', 'ShareHub now supports real file uploads! Note: 5MB file size limit due to serverless constraints.', 'success');
     }
 
     setupEventListeners() {
@@ -96,11 +96,41 @@ class ShareHubApp {
     handleFileSelect(files) {
         if (files.length === 0) return;
         
+        // Check file sizes
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const oversizedFiles = files.filter(file => file.size > maxSize);
+        
+        if (oversizedFiles.length > 0) {
+            this.showNotification('File Too Large', 
+                `The following files exceed the 5MB limit: ${oversizedFiles.map(f => f.name).join(', ')}`, 
+                'error');
+            return;
+        }
+        
         this.uploadFiles(Array.from(files));
     }
 
     handleModalFileSelect(files) {
-        this.selectedFiles = Array.from(files);
+        // Check file sizes
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const validFiles = [];
+        const oversizedFiles = [];
+        
+        Array.from(files).forEach(file => {
+            if (file.size > maxSize) {
+                oversizedFiles.push(file);
+            } else {
+                validFiles.push(file);
+            }
+        });
+        
+        if (oversizedFiles.length > 0) {
+            this.showNotification('Some Files Too Large', 
+                `${oversizedFiles.length} file(s) exceed the 5MB limit and were skipped.`, 
+                'warning');
+        }
+        
+        this.selectedFiles = validFiles;
         this.displaySelectedFiles();
         
         const uploadBtn = document.getElementById('uploadBtn');
